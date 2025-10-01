@@ -43,22 +43,6 @@ def dPsi_drho_2(rho):
 # 2. CONSTRUCCIÓN DEL CONTORNO
 # ====================================================================
 
-def F(rhok, rho_hat):
-    lamdak = dPsi_drho(rhok)
-    return lamdak * (rhok-rho_hat) - Psi(rhok)
-
-
-def imag_residual(rhok, rho_hat):
-    return np.imag(F(rhok, rho_hat))
-
-
-def s_finder(rhok, rho_hat, theta):
-    func = lambda s: imag_residual(rhok + s*np.exp(1j*theta), rho_hat)
-    initial_guess = 0.1
-    solution = fsolve(func, initial_guess)
-    return solution[0]
-
-
 # --- Construye el contorno en rho ---
 def build_rho_contour(rho_hat, step_size=0.04):
     """
@@ -78,8 +62,6 @@ def build_rho_contour(rho_hat, step_size=0.04):
         Psi_dd = dPsi_drho_2(rho_curr)       # Psi''(rho)
         delta = rho_curr - rho_hat           # (rho - rho_hat)
         theta = - np.angle(Psi_dd * delta)
-
-        #modulus = s_finder(rho_curr, rho_hat, theta)
         modulus = step_size
 
         delta_rho = modulus * np.exp(1j * theta)
