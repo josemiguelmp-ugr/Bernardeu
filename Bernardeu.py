@@ -53,13 +53,24 @@ def dPsi_drho_2(rho):
 
 # Gráfica de Lambda vs rho, donde podemos ver el punto crítico (máximo)
 rho = np.arange(0.7, 30, 0.1)
+lambdas = lbd_2(rho)
 
-plt.plot(rho, lbd_2(rho))
+# Critical values
+index_c = np.argmax(lambdas)
+rhoc_py, lambdac_py = rho[index_c], lambdas[index_c]
+phic_py = lambdac_py * rhoc_py - Psi(rhoc_py)
+print('Critical values\n')
+print(f'rho_c = {rhoc_py}, lambda_c = {lambdac_py}, phi_c = {phic_py}')
+
+plt.plot(rho, lambdas)
 plt.axhline(0.4, color='r')
+plt.axvline(rhoc_py, linestyle='dashed', color='gray')
 plt.ylim(-0.8, 0.8)
 plt.xscale('log')
 plt.xlabel(r'$\rho$')
 plt.ylabel(r'$\Psi\'(\rho)$')
+
+plt.savefig('Figures/Lambda_rho.png')
 plt.show()
 
 
@@ -157,6 +168,7 @@ plt.xlabel(r'Re[$\rho$]')
 plt.ylabel(r'Im[$\rho$]')
 plt.title('Example of numerical integration contour')
 
+plt.savefig('Figures/Contour_complex_plane.png')
 plt.show()
 
 
@@ -209,4 +221,5 @@ plt.ylabel(r'$\rho P(\rho)$')
 plt.xlabel(r'$\rho$')
 plt.legend()
 
+plt.savefig('Figures/PDF_rho.png')
 plt.show()
