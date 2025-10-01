@@ -2,22 +2,18 @@ import numpy as np
 import matplotlib.pylab as plt
 
 # Model parameters
-nu = 21/13       # ??????
-var = 0.45       # Variance at radius R
+nu = 21/13         # ??????
+var = 0.45         # Variance at radius R
 n = -1.5
 alpha = (n + 3) / 3
 
-# Values in the critical point (maximum of Fig. 1)
+# Values in the critical point from Mathematica (maximum of Fig. 1)
 rhoc = 2.57
 lamdac = 0.73
 phic = 0.91
 
-
-
+# Function Lambda(rho) = Psi'(rho)
 def lbd(r):
-    return r**0.5 / 0.45 * (  nu*(1-r**(-1/nu))*r**(-1/(nu-1)) + 0.25*nu**2*(1-r**(-1/nu))**2 / r  )
-
-def lbd_2(r):
     lamda =  nu * r**alpha / var * (1 - r**(-1/nu)) * r**(-(1+nu)/nu) + 0.5 * nu**2 * alpha / var * (1 - r**(-1/nu))**2 * r**(alpha-1)
     return lamda
 
@@ -51,9 +47,9 @@ def dPsi_drho_2(rho):
     return term1 + term2 + term3 + term4
 
 
-# Gráfica de Lambda vs rho, donde podemos ver el punto crítico (máximo)
+
 rho = np.arange(0.7, 30, 0.1)
-lambdas = lbd_2(rho)
+lambdas = dPsi_drho(rho)
 
 # Critical values
 index_c = np.argmax(lambdas)
@@ -62,6 +58,10 @@ phic_py = lambdac_py * rhoc_py - Psi(rhoc_py)
 print('Critical values\n')
 print(f'rho_c = {rhoc_py}, lambda_c = {lambdac_py}, phi_c = {phic_py}')
 
+rhoc, lamdac, phic = rhoc_py, lambdac_py, phic_py
+
+
+# Gráfica de Lambda vs rho, donde podemos ver el punto crítico (máximo)
 plt.plot(rho, lambdas)
 plt.axhline(0.4, color='r')
 plt.axvline(rhoc_py, linestyle='dashed', color='gray')
@@ -70,7 +70,7 @@ plt.xscale('log')
 plt.xlabel(r'$\rho$')
 plt.ylabel(r'$\Psi\'(\rho)$')
 
-plt.savefig('Figures/Lambda_rho.png')
+#plt.savefig('Figures/Lambda_rho.png')
 plt.show()
 
 
@@ -168,7 +168,7 @@ plt.xlabel(r'Re[$\rho$]')
 plt.ylabel(r'Im[$\rho$]')
 plt.title('Example of numerical integration contour')
 
-plt.savefig('Figures/Contour_complex_plane.png')
+#plt.savefig('Figures/Contour_complex_plane.png')
 plt.show()
 
 
@@ -221,5 +221,5 @@ plt.ylabel(r'$\rho P(\rho)$')
 plt.xlabel(r'$\rho$')
 plt.legend()
 
-plt.savefig('Figures/PDF_rho.png')
+#plt.savefig('Figures/PDF_rho.png')
 plt.show()
