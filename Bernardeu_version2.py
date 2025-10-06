@@ -7,10 +7,12 @@ var = 0.45         # Variance at radius R
 n = -1.5
 alpha = (n + 3) / 3
 
+"""
 # Values in the critical point from Mathematica (maximum of Fig. 1)
 rhoc = 2.57
 lamdac = 0.73
 phic = 0.91
+"""
 
 # Function Lambda(rho) = Psi'(rho)
 def lbd(r):
@@ -175,6 +177,10 @@ plt.show()
 # ====================================================================
 # 5. INTEGRACIÓN NUMÉRICA PARA UNA LISTA DE RHO_HAT
 # ====================================================================
+
+def Psi_version2(rho):
+    return 1/2 * tau_from_rho(rho)**2 * rho**alpha
+
 
 def complex_integration(rho_hat, step=1e-3):
     rho_path = build_rho_contour(rho_hat, step)

@@ -18,23 +18,23 @@ def sigma_r(rho):
     # Suponemos sigma constante para simplicidad
     return sigma0 * rho**(-alpha)
 
+# Expresión para Psi (versión 2)
 def Psi(rho):
     tau = tau_from_rho(rho)
-    sigma = sigma_r(rho)
-    return tau**2 / (2 * sigma)
+    return 1/2 * rho**alpha * tau**2
 
-# Derivada de Psi
+# Derivada de Psi (versión 2)
 def dPsi_drho(rho):
-    term1 = nu * rho**alpha / sigma0 * (1 - rho**(-1/nu)) * rho**(-(1+nu)/nu)
-    term2 = 0.5 * nu**2 * alpha / sigma0 * (1 - rho**(-1/nu))**2 * rho**(alpha-1)
+    term1 = 1/2 * nu**2 * alpha * rho**(alpha - 1) * ( 1 - rho**(-1/nu) )**2
+    term2 = nu * rho**(alpha - 1/nu - 1) * (1 - rho**(-1/nu))
     return term1 + term2
 
-
+# Segunda derivada de Psi (versión 2)
 def dPsi_drho_2(rho):
-    term1 = rho**(-2 + alpha - 2/nu) / sigma0
-    term2 = alpha * nu * rho**(-2+alpha-1/nu) * (1-rho**(-1/nu)) / sigma0
-    term3 = (-1+alpha-1/nu) * nu * rho**(-2+alpha-1/nu) * (1-rho**(-1/nu)) / sigma0
-    term4 = (alpha - 1) * alpha * nu**2 * rho**(-2+alpha) * (1-rho**(-1/nu))**2 / (2*sigma0)
+    term1 = 1/2 * nu**2 * alpha * (alpha - 1) * rho**(alpha - 2) * (1 - rho**(-1/nu))**2
+    term2 = nu * alpha * rho**(alpha - 1/nu - 2) * (1 - rho**(-1/nu))
+    term3 = nu * (alpha - 1/nu - 1) * rho**(alpha - 1/nu - 2) * (1 - rho**(-1/nu))
+    term4 = rho**(alpha - 2/nu - 2)
     return term1 + term2 + term3 + term4
 
 
