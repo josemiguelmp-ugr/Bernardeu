@@ -1,4 +1,5 @@
 import numpy as np 
+import pandas as pd
 import matplotlib.pylab as plt
 
 # Model parameters
@@ -185,8 +186,8 @@ def complex_integration(rho_hat, step=1e-3):
         rho_prev, lam_prev = rho_path[i-1], lam_path[i-1]
         rho, lam = rho_path[i], lam_path[i]
 
-        exp_prev = np.exp(lam_prev * (rho_prev - rho_hat) - Psi(rho_prev))
-        exp_curr = np.exp(lam * (rho - rho_hat) - Psi(rho))
+        exp_prev = np.exp( lam_prev * (rho_prev - rho_hat) - Psi(rho_prev) )
+        exp_curr = np.exp( lam * (rho - rho_hat) - Psi(rho) )
 
         dlambda = lam - lam_prev
         # Regla del trapecio
@@ -213,7 +214,7 @@ plt.plot(rho, rho*prob1, label='Leading order')
 plt.plot(rho, rho*prob2, label='Next-to-leading order')
 plt.plot(rho, rho*prob3, label='Next-to-next-to-leading order')
 plt.plot(rho, rho*prob_saddle(rho), label='Saddle point')
-plt.plot(rho, rho*integration_ar, label='Numerical integration')
+plt.plot(rho, np.real(rho*integration_ar), label='Numerical integration')
 
 plt.yscale('log')
 plt.ylim(1e-5, 1)
@@ -223,3 +224,17 @@ plt.legend()
 
 #plt.savefig('Figures/PDF_rho.png')
 plt.show()
+
+
+# =======================================================================
+# 7. DATAFRAME
+# =======================================================================
+"""
+df = pd.DataFrame()
+df['Density'] = rho
+df['Numerical_integration'] = rho * integration_ar
+df['Saddle_point'] = rho * prob_saddle(rho)
+
+df.to_csv('Figures/curvas.csv', index=False)
+
+"""
