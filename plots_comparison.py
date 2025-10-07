@@ -37,6 +37,8 @@ plt.plot(mi_rho, 2.2*mi_prob_rho, label = '2.2 * My integration')
 plt.yscale('log')
 plt.ylim(1e-5, 1)
 plt.xlim(0, 13)
+plt.ylabel(r'$\rho P(\rho)$')
+plt.xlabel(r'$\rho$')
 plt.legend(loc='best')
 plt.show()
 

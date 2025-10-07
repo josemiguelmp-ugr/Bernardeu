@@ -127,9 +127,9 @@ def build_rho_contour(rho_hat, step_size=0.04):
 
     F = dPsi_drho(rho_curr) * (rho_curr - rho_hat) - Psi(rho_curr)
 
-    while np.real(F)>-20:                    # Tenemos Im(F)=0, por lo que el integrando es exp(-Re(F)), donde Re(F) va creciendo a cada paso. Cuando el exponente sea muy negativo, la exponencial tenderá a cero
-        Psi_dd = dPsi_drho_2(rho_curr)       # Psi''(rho)
-        delta = rho_curr - rho_hat           # (rho - rho_hat)
+    while np.real(F)>-50:                     # Tenemos Im(F)=0, por lo que el integrando es exp(-Re(F)), donde Re(F) va creciendo a cada paso. Cuando el exponente sea muy negativo, la exponencial tenderá a cero
+        Psi_dd = dPsi_drho_2(rho_curr)        # Psi''(rho)
+        delta = rho_curr - rho_hat            # (rho - rho_hat)
         theta = - np.angle(Psi_dd * delta)
 
         #modulus = s_finder(rho_curr, rho_hat, theta)
@@ -216,6 +216,8 @@ plt.plot(rho, rho*prob3, label='Next-to-next-to-leading order')
 plt.plot(rho, rho*prob_saddle(rho), label='Saddle point')
 plt.plot(rho, np.real(rho*integration_ar), label='Numerical integration')
 
+
+
 plt.yscale('log')
 plt.ylim(1e-5, 1)
 plt.ylabel(r'$\rho P(\rho)$')
@@ -223,6 +225,14 @@ plt.xlabel(r'$\rho$')
 plt.legend()
 
 #plt.savefig('Figures/PDF_rho.png')
+plt.show()
+
+
+# Representamos la parte imaginaria de P(rho), que debería ser nula
+plt.plot(rho, np.abs(np.imag(rho*integration_ar)))
+plt.yscale('log')
+plt.ylabel(r'Im[$\rho P(\rho)$]')
+plt.xlabel(r'$\rho$')
 plt.show()
 
 
