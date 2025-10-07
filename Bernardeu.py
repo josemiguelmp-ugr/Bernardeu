@@ -3,48 +3,34 @@ import pandas as pd
 import matplotlib.pylab as plt
 
 # Model parameters
-nu = 21/13         # ??????
+nu = 21/13.        # ??????
 var = 0.45         # Variance at radius R
 n = -1.5
 alpha = (n + 3) / 3
 
-# Values in the critical point from Mathematica (maximum of Fig. 1)
+"""# Values in the critical point from Mathematica (maximum of Fig. 1)
 rhoc = 2.57
 lamdac = 0.73
-phic = 0.91
-
-# Function Lambda(rho) = Psi'(rho)
-def lbd(r):
-    lamda =  nu * r**alpha / var * (1 - r**(-1/nu)) * r**(-(1+nu)/nu) + 0.5 * nu**2 * alpha / var * (1 - r**(-1/nu))**2 * r**(alpha-1)
-    return lamda
-
-# Equation (13) from Bernardeu
-def tau_from_rho(rho):
-    return nu * (1 - rho**(-1/nu))
-
-# Variance for a generical radius
-def sigma_r(rho):
-    return var * rho**(-alpha)
+phic = 0.91"""
 
 # Equation (32) from Bernardeu
 def Psi(rho):
-    tau = tau_from_rho(rho)
-    sigma = sigma_r(rho)
-    return tau**2 / (2 * sigma)
+    tau = nu * (1 - rho**(-1/nu))
+    return tau**2 * rho**alpha / (2 * var)
 
 
 # Mathematical derivatives of Psi wrt rho (from Mathematica)
 def dPsi_drho(rho):
-    term1 = nu * rho**alpha / var * (1 - rho**(-1/nu)) * rho**(-(1+nu)/nu)
-    term2 = 0.5 * nu**2 * alpha / var * (1 - rho**(-1/nu))**2 * rho**(alpha-1)
+    term1 = nu * rho**(alpha - 1 - 1/nu) * (1 - rho**(-1/nu)) / var 
+    term2 = nu**2 * alpha * rho**(alpha-1) * (1 - rho**(-1/nu))**2 / (2*var)
     return term1 + term2
 
 
 def dPsi_drho_2(rho):
     term1 = rho**(-2 + alpha - 2/nu) / var
-    term2 = alpha * nu * rho**(-2+alpha-1/nu) * (1-rho**(-1/nu)) / var
-    term3 = (-1+alpha-1/nu) * nu * rho**(-2+alpha-1/nu) * (1-rho**(-1/nu)) / var
-    term4 = (alpha - 1) * alpha * nu**2 * rho**(-2+alpha) * (1-rho**(-1/nu))**2 / (2*var)
+    term2 = alpha * nu * rho**(-2 + alpha - 1/nu) * (1 - rho**(-1/nu)) / var
+    term3 = (-1 + alpha - 1/nu) * nu * rho**(-2 + alpha - 1/nu) * (1-rho**(-1/nu)) / var
+    term4 = (alpha - 1) * alpha * nu**2 * rho**(alpha - 2) * (1 - rho**(-1/nu))**2 / (2*var)
     return term1 + term2 + term3 + term4
 
 
@@ -63,13 +49,22 @@ rhoc, lamdac, phic = rhoc_py, lambdac_py, phic_py
 
 
 # Gráfica de Lambda vs rho, donde podemos ver el punto crítico (máximo)
-plt.plot(rho, lambdas)
+plt.plot(rho, 0.85*lambdas)
 plt.axhline(0.4, color='r')
 plt.axvline(rhoc_py, linestyle='dashed', color='gray')
 plt.ylim(-0.8, 0.8)
 plt.xscale('log')
 plt.xlabel(r'$\rho$')
 plt.ylabel(r'$\Psi\'(\rho)$')
+
+# Comparación con la curva de Bernardeu
+data_bernardeu_lambda = np.loadtxt('Figures/lambda_curve.csv', delimiter=',')
+
+rho_ber = data_bernardeu_lambda[:, 0]
+lambda_ber = data_bernardeu_lambda[:, 1]
+
+plt.plot(rho_ber, lambda_ber, label='Bernardeu')
+plt.legend()
 
 #plt.savefig('Figures/Lambda_rho.png')
 plt.show()
@@ -104,6 +99,7 @@ def prob_exact(r):
     p2 = exponential * ( term1 + term2 )
     p3 = exponential * ( term1 + term2 + term3 )
     return p1, p2, p3
+
 
 
 
@@ -234,7 +230,7 @@ df = pd.DataFrame()
 df['Density'] = rho
 df['Numerical_integration'] = rho * integration_ar
 df['Saddle_point'] = rho * prob_saddle(rho)
+df['NNLO'] = rho * prob3
 
 df.to_csv('Figures/curvas.csv', index=False)
-
 """
