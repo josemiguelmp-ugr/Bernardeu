@@ -27,12 +27,12 @@ mi_prob_rho_nnlo = df_mis_datos['NNLO'].values
 
 mi_rho_nnlo = mi_rho[len(mi_rho)-len(mi_prob_rho_nnlo):]
 
-#plt.plot(rho, prob_rho, label= 'Bernardeu integration')
-#plt.plot(mi_rho, 2.2*mi_prob_rho, label = '2.2 * My integration')
-#plt.plot(rho_saddle, prob_rho_saddle, label= 'Bernardeu saddle approx.')
+plt.plot(rho, prob_rho, label= 'Bernardeu integration')
+plt.plot(mi_rho, 2.2*mi_prob_rho, label = '2.2 * My integration')
+#plt.plot(rho_saddle, prob_rho_saddle/rho_saddle, label= 'Bernardeu saddle approx.')
 #plt.plot(mi_rho[:len(mi_prob_rho_sad)], mi_prob_rho_sad, label='My saddle approx.')
-plt.plot(rho_nnlo, prob_rho_nnlo, label='Bernardeu NNLO')
-plt.plot(mi_rho_nnlo, mi_prob_rho_nnlo, label='My NNLO')
+#plt.plot(rho_nnlo, prob_rho_nnlo, label='Bernardeu NNLO')
+#plt.plot(mi_rho_nnlo, mi_prob_rho_nnlo, label='My NNLO')
 
 plt.yscale('log')
 plt.ylim(1e-5, 1)

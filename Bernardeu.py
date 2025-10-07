@@ -3,15 +3,17 @@ import pandas as pd
 import matplotlib.pylab as plt
 
 # Model parameters
-nu = 21/13.        # ??????
-var = 0.45         # Variance at radius R
-n = -1.5
+nu  = 21/13.        # Fit in lambda vs rho approximately for nu=1.36
+var = 0.45          # Variance at radius R
+n   = -1.5
 alpha = (n + 3) / 3
 
-"""# Values in the critical point from Mathematica (maximum of Fig. 1)
+"""
+# Values in the critical point from Mathematica (maximum of Fig. 1)
 rhoc = 2.57
 lamdac = 0.73
-phic = 0.91"""
+phic = 0.91
+"""
 
 # Equation (32) from Bernardeu
 def Psi(rho):
@@ -45,9 +47,11 @@ phic_py = lambdac_py * rhoc_py - Psi(rhoc_py)
 print('Critical values\n')
 print(f'rho_c = {rhoc_py}, lambda_c = {lambdac_py}, phi_c = {phic_py}')
 
-rhoc, lamdac, phic = rhoc_py, lambdac_py, phic_py
+#rhoc, lamdac, phic = rhoc_py, lambdac_py, phic_py
+rhoc, lamdac = 0.6, 1
+phic = rhoc * lamdac - Psi(rhoc)
 
-
+"""
 # Gráfica de Lambda vs rho, donde podemos ver el punto crítico (máximo)
 plt.plot(rho, lambdas)
 plt.axhline(0.4, color='r')
@@ -68,7 +72,7 @@ plt.legend()
 
 #plt.savefig('Figures/Lambda_rho.png')
 plt.show()
-
+"""
 
 # ========================================================================
 # 1. SADDLE POINT APPROXIMATION
@@ -121,7 +125,7 @@ def build_rho_contour(rho_hat, step_size=0.04):
     rho_path = [rho_start]
     rho_curr = rho_start
 
-    F = dPsi_drho(rho_curr)*(rho_curr - rho_hat) - Psi(rho_curr)
+    F = dPsi_drho(rho_curr) * (rho_curr - rho_hat) - Psi(rho_curr)
 
     while np.real(F)>-20:                    # Tenemos Im(F)=0, por lo que el integrando es exp(-Re(F)), donde Re(F) va creciendo a cada paso. Cuando el exponente sea muy negativo, la exponencial tenderá a cero
         Psi_dd = dPsi_drho_2(rho_curr)       # Psi''(rho)
@@ -225,12 +229,11 @@ plt.show()
 # =======================================================================
 # 7. DATAFRAME
 # =======================================================================
-"""
+
 df = pd.DataFrame()
 df['Density'] = rho
 df['Numerical_integration'] = rho * integration_ar
-df['Saddle_point'] = rho * prob_saddle(rho)
+df['Saddle_point'] = prob_saddle(rho)
 df['NNLO'] = rho * prob3
 
 df.to_csv('Figures/curvas.csv', index=False)
-"""
