@@ -49,7 +49,7 @@ rhoc, lamdac, phic = rhoc_py, lambdac_py, phic_py
 
 
 # Gráfica de Lambda vs rho, donde podemos ver el punto crítico (máximo)
-plt.plot(rho, 0.85*lambdas)
+plt.plot(rho, lambdas)
 plt.axhline(0.4, color='r')
 plt.axvline(rhoc_py, linestyle='dashed', color='gray')
 plt.ylim(-0.8, 0.8)
