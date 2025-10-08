@@ -3,38 +3,31 @@ import matplotlib.pyplot as plt
 
 # --- Parámetros cosmológicos / modelo ---
 nu = 21/13
-sigma0 = 0.45
+var = 0.45
 alpha = 0.5
 
 rhoc = 2.57
 lamdac = 0.73
 phic = 0.91
 
-# --- Funciones básicas ---
-def tau_from_rho(rho):
-    return nu * (1 - rho**(-1/nu))
-
-def sigma_r(rho):
-    # Suponemos sigma constante para simplicidad
-    return sigma0 * rho**(-alpha)
-
-# Expresión para Psi (versión 2)
+# Equation (32) from Bernardeu
 def Psi(rho):
-    tau = tau_from_rho(rho)
-    return 1/2 * rho**alpha * tau**2
+    tau = nu * (1 - rho**(-1/nu))
+    return tau**2 * rho**alpha / (2 * var)
 
-# Derivada de Psi (versión 2)
+
+# Mathematical derivatives of Psi wrt rho (from Mathematica)
 def dPsi_drho(rho):
-    term1 = 1/2 * nu**2 * alpha * rho**(alpha - 1) * ( 1 - rho**(-1/nu) )**2
-    term2 = nu * rho**(alpha - 1/nu - 1) * (1 - rho**(-1/nu))
+    term1 = nu * rho**(alpha - 1 - 1/nu) * (1 - rho**(-1/nu)) / var 
+    term2 = nu**2 * alpha * rho**(alpha-1) * (1 - rho**(-1/nu))**2 / (2*var)
     return term1 + term2
 
-# Segunda derivada de Psi (versión 2)
+
 def dPsi_drho_2(rho):
-    term1 = 1/2 * nu**2 * alpha * (alpha - 1) * rho**(alpha - 2) * (1 - rho**(-1/nu))**2
-    term2 = nu * alpha * rho**(alpha - 1/nu - 2) * (1 - rho**(-1/nu))
-    term3 = nu * (alpha - 1/nu - 1) * rho**(alpha - 1/nu - 2) * (1 - rho**(-1/nu))
-    term4 = rho**(alpha - 2/nu - 2)
+    term1 = rho**(-2 + alpha - 2/nu) / var
+    term2 = alpha * nu * rho**(-2 + alpha - 1/nu) * (1 - rho**(-1/nu)) / var
+    term3 = (-1 + alpha - 1/nu) * nu * rho**(-2 + alpha - 1/nu) * (1-rho**(-1/nu)) / var
+    term4 = (alpha - 1) * alpha * nu**2 * rho**(alpha - 2) * (1 - rho**(-1/nu))**2 / (2*var)
     return term1 + term2 + term3 + term4
 
 
@@ -56,19 +49,21 @@ def build_rho_contour(rho_hat, step_size=0.04):
     rho_path = [rho_start]
     rho_curr = rho_start
 
-    F = dPsi_drho(rho_curr)*(rho_curr - rho_hat) - Psi(rho_curr)
+    F = dPsi_drho(rho_curr) * (rho_curr - rho_hat) - Psi(rho_curr)
 
-    while np.real(F)>-20:                    # Tenemos Im(F)=0, por lo que el integrando es exp(-Re(F)), donde Re(F) va creciendo a cada paso. Cuando el exponente sea muy negativo, la exponencial tenderá a cero
-        Psi_dd = dPsi_drho_2(rho_curr)       # Psi''(rho)
-        delta = rho_curr - rho_hat           # (rho - rho_hat)
+    while np.real(F)>-50:                     # Tenemos Im(F)=0, por lo que el integrando es exp(-Re(F)), donde Re(F) va creciendo a cada paso. Cuando el exponente sea muy negativo, la exponencial tenderá a cero
+        Psi_dd = dPsi_drho_2(rho_curr)        # Psi''(rho)
+        delta = rho_curr - rho_hat            # (rho - rho_hat)
         theta = - np.angle(Psi_dd * delta)
+
+        #modulus = s_finder(rho_curr, rho_hat, theta)
         modulus = step_size
 
         delta_rho = modulus * np.exp(1j * theta)
         rho_curr = rho_curr - delta_rho
         rho_path.append(rho_curr)
 
-        F = dPsi_drho(rho_curr)*(rho_curr - rho_hat) - Psi(rho_curr)
+        F = dPsi_drho(rho_curr) * (rho_curr - rho_hat) - Psi(rho_curr)
 
     rho_contour = rho_path
     rho_contour = np.array(rho_contour, dtype=complex)
@@ -85,19 +80,38 @@ rho_path = build_rho_contour(rho_hat, step_size=1e-5)
 lam_path = lambda_contour(rho_path)
 
 
+F_ar = dPsi_drho(rho_path) * (rho_path - rho_hat) - Psi(rho_path)
+ReF, ImF = np.real(F_ar), np.imag(F_ar)
+
+rho_path_conjugate = np.conjugate(rho_path)
+F_conjugate_ar = dPsi_drho(rho_path_conjugate) * (rho_path_conjugate - rho_hat) - Psi(rho_path_conjugate)
+ReF_conjugate, ImF_conjugate = np.real(F_conjugate_ar), np.imag(F_conjugate_ar)
+
 """
-ImF = np.imag(dPsi_drho(rho_path)*(rho_path - rho_hat) - Psi(rho_path))
-plt.plot(abs(ImF))
-plt.ylabel(r'Im[$F$]')
-plt.show()
+fig, ax = plt.subplots(3, 1)
+fig.set_size_inches(10, 6)
+ax[0].plot(ImF, label='Original contour', color='r', linestyle='solid')
+ax[0].plot(ImF_conjugate, label='Conjugate contour', linestyle='-.', color='b')
+ax[0].set_ylabel(r'Im[$F$]')
+ax[0].legend()
 
-ReF = np.real(dPsi_drho(rho_path)*(rho_path - rho_hat) - Psi(rho_path))
-plt.plot(ReF)
-plt.ylabel(r'Re[$F$]')
-plt.show()
+ax[1].plot(abs(ImF), label='Original contour', color='r', linestyle='solid')
+ax[1].plot(abs(ImF_conjugate), label='Conjugate contour', linestyle='-.', color='b')
+ax[1].set_ylabel(r'abs(Im[$F$])')
+ax[1].legend()
+
+
+ax[2].plot(ReF, label='Original contour', color='r', linestyle='solid')
+ax[2].plot(ReF_conjugate, label='Conjugate contour', linestyle='-.', color='b')
+ax[2].set_ylabel(r'Re[$F$]')
+ax[2].legend()
+fig.show()
+#plt.savefig('Figures/Conjugate_contour.png')
+plt.close()
 """
 
 
+"""
 # We plot the contour in the complex plane for rho
 real_parts, imag_parts = [], []
 for i in range(0, len(rho_path)):
@@ -109,14 +123,11 @@ plt.ylabel(r'Im[$\rho$]')
 
 plt.show()
 
+"""
 
 
-
-
-
-
-def complex_integration(rho_hat):
-    rho_path = build_rho_contour(rho_hat, 1e-3)
+def complex_integration(rho_hat, step=1e-3):
+    rho_path = build_rho_contour(rho_hat, step)
     lam_path = lambda_contour(rho_path)
     
     integral = 0
@@ -124,22 +135,41 @@ def complex_integration(rho_hat):
         rho_prev, lam_prev = rho_path[i-1], lam_path[i-1]
         rho, lam = rho_path[i], lam_path[i]
 
-        exp_prev = np.exp(lam_prev * (rho_prev - rho_hat) - Psi(rho_prev))
-        exp_curr = np.exp(lam * (rho - rho_hat) - Psi(rho))
+        exp_prev = np.exp( lam_prev * (rho_prev - rho_hat) - Psi(rho_prev) )
+        exp_curr = np.exp( lam * (rho - rho_hat) - Psi(rho) )
 
         dlambda = lam - lam_prev
         # Regla del trapecio
         integral += 0.5 * (exp_prev + exp_curr) * dlambda
 
-    return integral / (2j * np.pi)
+    result = 2 * integral / (2j * np.pi)  
+    
+    # El contorno de integración está compuesto por el contorno rho_path y por su conjugado (donde también tenemos Im[exponente]=0)
+    # Como las integrales en ambos contornos son iguales, aparece un factor 2 multiplicativo
+    # Ver la figura Conjugate_contour
+
+    return result
 
 rho_ar = np.arange(0, 13, 0.05)
 integration = []
 for rs in rho_ar:
-    integration.append(complex_integration(rs))
+    integration.append(complex_integration(rs, 1e-3))
 
 integration_ar = np.array(integration)
-plt.plot(rho_ar, rho_ar*integration_ar)
+print(integration_ar)
+
+
+integration_ar = np.array(integration)
+plt.figure()
+plt.plot(rho_ar, rho_ar*integration_ar, label='My integration')
+
+# Bernardeu curves
+data_bernardeu_int = np.loadtxt('Figures/numerical_integration.csv', delimiter=',')
+rho = data_bernardeu_int[:, 0]
+prob_rho = data_bernardeu_int[:, 1]
+plt.plot(rho, prob_rho, label= 'Bernardeu integration')
+
+
 plt.yscale('log')
 plt.ylim(1e-5, 1)
 plt.ylabel(r'$\rho P(\rho)$')

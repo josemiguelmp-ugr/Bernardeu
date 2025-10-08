@@ -192,8 +192,14 @@ def complex_integration(rho_hat, step=1e-3):
         dlambda = lam - lam_prev
         # Regla del trapecio
         integral += 0.5 * (exp_prev + exp_curr) * dlambda
+    
+    result = 2 * integral / (2j * np.pi)  
+    
+    # El contorno de integración está compuesto por el contorno rho_path y por su conjugado (donde también tenemos Im[exponente]=0)
+    # Como las integrales en ambos contornos son iguales, aparece un factor 2 multiplicativo
+    # Ver la figura Conjugate_contour
 
-    return integral / (2j * np.pi)
+    return result
 
 rho_ar = np.arange(0, 13, 0.05)
 integration = []
