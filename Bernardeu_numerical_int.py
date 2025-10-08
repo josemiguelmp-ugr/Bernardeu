@@ -6,10 +6,7 @@ nu = 21/13
 var = 0.45
 alpha = 0.5
 
-rhoc = 2.57
-lamdac = 0.73
-phic = 0.91
-
+# Basic functions
 # Equation (32) from Bernardeu
 def Psi(rho):
     tau = nu * (1 - rho**(-1/nu))
@@ -30,6 +27,19 @@ def dPsi_drho_2(rho):
     term4 = (alpha - 1) * alpha * nu**2 * rho**(alpha - 2) * (1 - rho**(-1/nu))**2 / (2*var)
     return term1 + term2 + term3 + term4
 
+
+# Critical values 
+rho = np.arange(0.7, 30, 0.1)
+lambdas = dPsi_drho(rho)
+
+# Critical values
+index_c = np.argmax(lambdas)
+rhoc_py, lambdac_py = rho[index_c], lambdas[index_c]
+phic_py = lambdac_py * rhoc_py - Psi(rhoc_py)
+print('Critical values\n')
+print(f'rho_c = {rhoc_py}, lambda_c = {lambdac_py}, phi_c = {phic_py}')
+
+rhoc, lamdac, phic = rhoc_py, lambdac_py, phic_py
 
 
 # ====================================================================
@@ -56,7 +66,6 @@ def build_rho_contour(rho_hat, step_size=0.04):
         delta = rho_curr - rho_hat            # (rho - rho_hat)
         theta = - np.angle(Psi_dd * delta)
 
-        #modulus = s_finder(rho_curr, rho_hat, theta)
         modulus = step_size
 
         delta_rho = modulus * np.exp(1j * theta)
@@ -75,10 +84,23 @@ def lambda_contour(rho_contour):
     return lambdas
 
 
-rho_hat = 1.6
+rho_hat = 1.1
 rho_path = build_rho_contour(rho_hat, step_size=1e-5)
 lam_path = lambda_contour(rho_path)
 
+"""
+# We plot the contour in the complex plane for rho
+real_parts, imag_parts = [], []
+for i in range(0, len(rho_path)):
+    real_parts.append(rho_path[i].real), imag_parts.append(rho_path[i].imag)
+
+plt.plot(real_parts, imag_parts)
+plt.xlabel(r'Re[$\rho$]')
+plt.ylabel(r'Im[$\rho$]')
+plt.title('Example of numerical integration contour')
+
+plt.show()
+"""
 
 F_ar = dPsi_drho(rho_path) * (rho_path - rho_hat) - Psi(rho_path)
 ReF, ImF = np.real(F_ar), np.imag(F_ar)
@@ -107,56 +129,47 @@ ax[2].set_ylabel(r'Re[$F$]')
 ax[2].legend()
 fig.show()
 #plt.savefig('Figures/Conjugate_contour.png')
+plt.show()
 plt.close()
 """
 
 
-"""
-# We plot the contour in the complex plane for rho
-real_parts, imag_parts = [], []
-for i in range(0, len(rho_path)):
-    real_parts.append(rho_path[i].real), imag_parts.append(rho_path[i].imag)
-
-plt.plot(real_parts, imag_parts)
-plt.xlabel(r'Re[$\rho$]')
-plt.ylabel(r'Im[$\rho$]')
-
-plt.show()
-
-"""
-
 
 def complex_integration(rho_hat, step=1e-3):
-    rho_path = build_rho_contour(rho_hat, step)
+    rho_path_original = build_rho_contour(rho_hat, step)
+    rho_path_conjugate = np.conjugate(rho_path_original)
+    rho_path = np.concatenate((rho_path_conjugate[::-1], rho_path_original))
     lam_path = lambda_contour(rho_path)
     
-    integral = 0
-    for i in range(1, len(rho_path)):
-        rho_prev, lam_prev = rho_path[i-1], lam_path[i-1]
-        rho, lam = rho_path[i], lam_path[i]
-
-        exp_prev = np.exp( lam_prev * (rho_prev - rho_hat) - Psi(rho_prev) )
-        exp_curr = np.exp( lam * (rho - rho_hat) - Psi(rho) )
-
-        dlambda = lam - lam_prev
-        # Regla del trapecio
-        integral += 0.5 * (exp_prev + exp_curr) * dlambda
-
-    result = 2 * integral / (2j * np.pi)  
-    
     # El contorno de integración está compuesto por el contorno rho_path y por su conjugado (donde también tenemos Im[exponente]=0)
-    # Como las integrales en ambos contornos son iguales, aparece un factor 2 multiplicativo
+    # Como las integrales en ambos contornos son iguales, aparece un factor 2 multiplicativo para la parte real, y las partes imaginarias se cancelan
     # Ver la figura Conjugate_contour
+    
+    integral = 0
+    
+    # Integración numérica, con el método Runge-Kutta 4
+    for i in range(len(rho_path)):
+        rho_i, lam_i = rho_path[i-1], lam_path[i-1]
+        rho_f, lam_f = rho_path[i], lam_path[i]
 
+        # Paso en el parámetro (lambda)
+        dlambda = lam_f - lam_i
+
+        # Definimos función integrando
+        def integrand(rho, lam):
+            return np.exp(lam * (rho - rho_hat) - Psi(rho))
+
+        # Regla del trapecio
+        integral += 0.5 * ( integrand(rho_i, lam_i) + integrand(rho_f, lam_f) ) * dlambda
+
+    result = integral / (2j * np.pi)  
+    
     return result
 
 rho_ar = np.arange(0, 13, 0.05)
 integration = []
 for rs in rho_ar:
     integration.append(complex_integration(rs, 1e-3))
-
-integration_ar = np.array(integration)
-print(integration_ar)
 
 
 integration_ar = np.array(integration)

@@ -18,7 +18,7 @@ phic = 0.91
 
 # Equation (32) from Bernardeu
 def Psi(rho):
-    tau = nu * (1 - rho**(-1/nu))
+    tau = nu * (1 - rho**(-1/nu))             # Eq. (13)
     return tau**2 * rho**alpha / (2 * var)
 
 
@@ -38,7 +38,7 @@ def dPsi_drho_2(rho):
 
 
 
-rho = np.arange(0.7, 30, 0.1)
+rho = np.arange(0.7, 30, 0.05)
 lambdas = dPsi_drho(rho)
 
 # Critical values
@@ -94,7 +94,7 @@ def prob_saddle(rho):
 
 # Equation (45) from Bernardeu
 def prob_exact(r):
-    exponential = np.exp(0.964585-0.729487*r)
+    exponential = np.exp(0.964585 - 0.729487*r)
     term1 =   1.20388 / (r - 2.57107)**(5/2)
     term2 = - 3.80256 / (r - 2.57107)**(7/2)
     term3 = - 15.9587 / (r - 2.57107)**(9/2)
@@ -258,8 +258,8 @@ def log_formatter(y, pos):
 ax.xaxis.set_minor_locator(ticker.MultipleLocator(0.5))
 ax.yaxis.set_major_formatter(ticker.FuncFormatter(log_formatter))
 
-fig.show()
-plt.savefig('Figures/PDF_rho.png')
+plt.show()
+#plt.savefig('Figures/PDF_rho.png')
 plt.close()
 
 
