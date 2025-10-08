@@ -259,7 +259,7 @@ ax.xaxis.set_minor_locator(ticker.MultipleLocator(0.5))
 ax.yaxis.set_major_formatter(ticker.FuncFormatter(log_formatter))
 
 fig.show()
-plt.savefig('Figures/PDF_rho_xddddd.png')
+plt.savefig('Figures/PDF_rho.png')
 plt.close()
 
 
