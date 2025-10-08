@@ -1,6 +1,7 @@
 import numpy as np 
 import pandas as pd
 import matplotlib.pylab as plt
+import matplotlib.ticker as ticker
 
 # Model parameters
 nu  = 21/13.        # Fit in lambda vs rho approximately for nu=1.36
@@ -47,9 +48,8 @@ phic_py = lambdac_py * rhoc_py - Psi(rhoc_py)
 print('Critical values\n')
 print(f'rho_c = {rhoc_py}, lambda_c = {lambdac_py}, phi_c = {phic_py}')
 
-#rhoc, lamdac, phic = rhoc_py, lambdac_py, phic_py
-rhoc, lamdac = 0.6, 1
-phic = rhoc * lamdac - Psi(rhoc)
+rhoc, lamdac, phic = rhoc_py, lambdac_py, phic_py
+
 
 """
 # Gráfica de Lambda vs rho, donde podemos ver el punto crítico (máximo)
@@ -103,7 +103,6 @@ def prob_exact(r):
     p2 = exponential * ( term1 + term2 )
     p3 = exponential * ( term1 + term2 + term3 )
     return p1, p2, p3
-
 
 
 
@@ -216,31 +215,62 @@ integration_ar = np.array(integration)
 rho = np.arange(0, 13, 0.05)
 prob1, prob2, prob3 = prob_exact(rho)
 
-plt.plot(rho, rho*prob1, label='Leading order')
-plt.plot(rho, rho*prob2, label='Next-to-leading order')
-plt.plot(rho, rho*prob3, label='Next-to-next-to-leading order')
-plt.plot(rho, rho*prob_saddle(rho), label='Saddle point')
-plt.plot(rho, np.real(rho*integration_ar), label='Numerical integration')
+fig, ax = plt.subplots()
+fig.set_size_inches(10, 6)
+ax.plot(rho, rho*prob1, label='Leading order')
+ax.plot(rho, rho*prob2, label='Next-to-leading order')
+ax.plot(rho, rho*prob3, label='Next-to-next-to-leading order')
+ax.plot(rho, rho*prob_saddle(rho), label='Saddle point')
+ax.plot(rho, np.real(rho*integration_ar), label='Numerical integration')
 
 
+ax.set_yscale('log')
+ax.set_ylim(1e-5, 1)
+ax.set_ylabel(r'$\rho P(\rho)$')
+ax.set_xlabel(r'$\rho$')
+ax.legend()
 
-plt.yscale('log')
-plt.ylim(1e-5, 1)
-plt.ylabel(r'$\rho P(\rho)$')
-plt.xlabel(r'$\rho$')
-plt.legend()
+def log_formatter(y, pos):
+    """
+    Formateador de etiquetas para el eje Y en escala logarítmica.
 
-#plt.savefig('Figures/PDF_rho.png')
-plt.show()
+    Muestra el valor en formato decimal (ej., 1, 0.1) si y >= 10^-3.
+    A partir de 10^-4, usa notación de base 10 (ej., 10^-4).
+
+    Parameters
+    ----------
+    y : float
+        Valor de la marca del eje (e.g., 1.0, 0.1, 0.001).
+    pos : int
+        Posición de la marca. Requerido por FuncFormatter, pero no usado.
+
+    Return
+    -------
+    str
+        Etiqueta formateada (decimal o en formato LaTeX de base 10).
+    """
+    if y >= 1e-3:
+        return f'{y:g}'
+    else:
+        exponent = int(np.log10(y))
+        return r'$10^{{{:d}}}$'.format(exponent)
+
+ax.xaxis.set_minor_locator(ticker.MultipleLocator(0.5))
+ax.yaxis.set_major_formatter(ticker.FuncFormatter(log_formatter))
+
+fig.show()
+plt.savefig('Figures/PDF_rho_xddddd.png')
+plt.close()
 
 
+"""
 # Representamos la parte imaginaria de P(rho), que debería ser nula
 plt.plot(rho, np.abs(np.imag(rho*integration_ar)))
 plt.yscale('log')
 plt.ylabel(r'Im[$\rho P(\rho)$]')
 plt.xlabel(r'$\rho$')
 plt.show()
-
+"""
 
 # =======================================================================
 # 7. DATAFRAME
