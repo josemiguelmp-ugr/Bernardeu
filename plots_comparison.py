@@ -3,11 +3,11 @@ import pandas as pd
 import matplotlib.pylab as plt
 
 
-data_bernardeu_int = np.loadtxt('Figures/numerical_integration.csv', delimiter=',')
-data_bernardeu_sad = np.loadtxt('Figures/saddle_point.csv', delimiter=',')
-data_bernardeu_lo = np.loadtxt('Figures/LO.csv', delimiter=',')
-data_bernardeu_nnlo = np.loadtxt('Figures/NNLO.csv', delimiter=',')
-df_mis_datos = pd.read_csv('Figures/curvas.csv')
+data_bernardeu_int = np.loadtxt('Data/numerical_integration.csv', delimiter=',')
+data_bernardeu_sad = np.loadtxt('Data/saddle_point.csv', delimiter=',')
+data_bernardeu_lo = np.loadtxt('Data/LO.csv', delimiter=',')
+data_bernardeu_nnlo = np.loadtxt('Data/NNLO.csv', delimiter=',')
+df_mis_datos = pd.read_csv('Data/curvas.csv')
 
 rho = data_bernardeu_int[:, 0]
 prob_rho = data_bernardeu_int[:, 1]
@@ -22,7 +22,6 @@ rho_nnlo = data_bernardeu_nnlo[:, 0]
 prob_rho_nnlo = data_bernardeu_nnlo[:, 1]
 
 mi_rho = df_mis_datos['Density'].values
-
 mi_prob_rho = df_mis_datos['Numerical_integration'].apply(complex).values
 mi_prob_rho_sad = df_mis_datos['Saddle_point'].values
 mi_prob_rho_nnlo = df_mis_datos['NNLO'].values
@@ -30,10 +29,10 @@ mi_prob_rho_nnlo = df_mis_datos['NNLO'].values
 mi_rho_nnlo = mi_rho[len(mi_rho)-len(mi_prob_rho_nnlo):]
 
 
-plt.plot(rho, prob_rho/rho, label= 'Bernardeu integration')
-plt.plot(mi_rho, mi_prob_rho/mi_rho, label = 'My integration')
-#plt.plot(rho_saddle, prob_rho_saddle/rho_saddle, label= 'Bernardeu saddle approx.')
-#plt.plot(mi_rho[:len(mi_prob_rho_sad)], mi_prob_rho_sad, label='My saddle approx.')
+#plt.plot(rho, prob_rho/rho, label= 'Bernardeu integration')
+#plt.plot(mi_rho, mi_prob_rho/mi_rho, label = 'My integration')
+plt.plot(rho_saddle, prob_rho_saddle/rho_saddle, label= 'Bernardeu saddle approx.')
+plt.plot(mi_rho[:len(mi_prob_rho_sad)], mi_prob_rho_sad, label='My saddle approx.')
 #plt.plot(rho_nnlo, prob_rho_nnlo, label='Bernardeu NNLO')
 #plt.plot(mi_rho_nnlo, mi_prob_rho_nnlo, label='My NNLO')
 

@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-# --- Parámetros cosmológicos / modelo ---
+# Parámetros cosmológicos / modelo
 nu = 21/13
 var = 0.45
 alpha = 0.5
@@ -177,7 +177,7 @@ plt.figure()
 plt.plot(rho_ar, rho_ar*integration_ar, label='My integration')
 
 # Bernardeu curves
-data_bernardeu_int = np.loadtxt('Figures/numerical_integration.csv', delimiter=',')
+data_bernardeu_int = np.loadtxt('Data/numerical_integration.csv', delimiter=',')
 rho = data_bernardeu_int[:, 0]
 prob_rho = data_bernardeu_int[:, 1]
 plt.plot(rho, prob_rho, label= 'Bernardeu integration')

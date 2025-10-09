@@ -50,7 +50,7 @@ print(f'rho_c = {rhoc_py}, lambda_c = {lambdac_py}, phi_c = {phic_py}')
 rhoc, lamdac, phic = rhoc_py, lambdac_py, phic_py
 
 
-"""
+
 # Gráfica de Lambda vs rho, donde podemos ver el punto crítico (máximo)
 plt.plot(rho, lambdas)
 plt.axhline(0.4, color='r')
@@ -61,7 +61,7 @@ plt.xlabel(r'$\rho$')
 plt.ylabel(r'$\Psi\'(\rho)$')
 
 # Comparación con la curva de Bernardeu
-data_bernardeu_lambda = np.loadtxt('Figures/lambda_curve.csv', delimiter=',')
+data_bernardeu_lambda = np.loadtxt('Data/lambda_curve.csv', delimiter=',')
 
 rho_ber = data_bernardeu_lambda[:, 0]
 lambda_ber = data_bernardeu_lambda[:, 1]
@@ -71,7 +71,7 @@ plt.legend()
 
 #plt.savefig('Figures/Lambda_rho.png')
 plt.show()
-"""
+
 
 # ========================================================================
 # 1. SADDLE POINT APPROXIMATION
@@ -107,7 +107,6 @@ def prob_exact(r):
 # ====================================================================
 # 3. CONSTRUCCIÓN DEL CONTORNO
 # ====================================================================
-
 
 # We build the integration contour for rho
 def build_rho_contour(rho_hat, step_size=0.04):
