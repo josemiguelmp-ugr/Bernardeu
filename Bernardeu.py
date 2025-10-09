@@ -50,7 +50,6 @@ print(f'rho_c = {rhoc_py}, lambda_c = {lambdac_py}, phi_c = {phic_py}')
 rhoc, lamdac, phic = rhoc_py, lambdac_py, phic_py
 
 
-
 # Gráfica de Lambda vs rho, donde podemos ver el punto crítico (máximo)
 plt.plot(rho, lambdas)
 plt.axhline(0.4, color='r')
