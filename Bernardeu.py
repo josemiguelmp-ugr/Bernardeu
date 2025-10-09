@@ -38,10 +38,9 @@ def dPsi_drho_2(rho):
 
 
 
+# Critical values
 rho = np.arange(0.7, 30, 0.05)
 lambdas = dPsi_drho(rho)
-
-# Critical values
 index_c = np.argmax(lambdas)
 rhoc_py, lambdac_py = rho[index_c], lambdas[index_c]
 phic_py = lambdac_py * rhoc_py - Psi(rhoc_py)
@@ -81,7 +80,6 @@ plt.show()
 # Equation (44) from Bernardeu
 def prob_saddle(rho):
     """
-    Following the Eq. (44) of Bernardeu et al.
     It is valid as long as the expression that appears in the square root is positive, i.e. rho < rhoc . When this condi-
     tion is not satisfied, the singular behavior of phi near λc dominates the integral in the complex plane.
     """    
@@ -114,13 +112,25 @@ def prob_exact(r):
 # We build the integration contour for rho
 def build_rho_contour(rho_hat, step_size=0.04):
     """
-    Construye un contorno (lista de rho complejos) tal que Im[F(rho)] constante,
-    donde F(rho) = Psi'(rho)*(rho - rho_hat) - Psi(rho).
+    Función que construye un contorno de integración en el plano complejo de rho para la integral P(rho_hat) de la Ec. (B1) de Bernardeu.
+    Para construirlo, establece la condición de que Im[F(rho)] constante, donde F(rho) es el exponente de la integral, 
+    i.e. F(rho) = Psi'(rho)*(rho - rho_hat) - Psi(rho).
+
+    Parameters
+    ----------
+    rho_hat : float
+        Densidad física para la cual integramos. Es un número real. Si rho_hat<rhoc, este será el punto de inicio del contorno en la recta real.
+        En caso contrario, el punto de inicio será rhoc.
+    step_size : float
+        Magnitud (módulo) de cada paso utilizado para construir el contorno de integración.
     
-    rho_start: punto inicial (rho_s)
+    Return
+    -------
+    np.array
+        Array de números complejos que componen el contorno.
     """
 
-    rho_start = rho_hat if rho_hat < rhoc else rhoc     # en región regular; si no, pon rho_start=rho_c (crítico)
+    rho_start = rho_hat if rho_hat < rhoc else rhoc
     rho_path = [rho_start]
     rho_curr = rho_start
 
@@ -130,8 +140,6 @@ def build_rho_contour(rho_hat, step_size=0.04):
         Psi_dd = dPsi_drho_2(rho_curr)        # Psi''(rho)
         delta = rho_curr - rho_hat            # (rho - rho_hat)
         theta = - np.angle(Psi_dd * delta)
-
-        #modulus = s_finder(rho_curr, rho_hat, theta)
         modulus = step_size
 
         delta_rho = modulus * np.exp(1j * theta)
@@ -145,18 +153,13 @@ def build_rho_contour(rho_hat, step_size=0.04):
     return rho_contour
 
 
-def lambda_contour(rho_contour):
-    lambdas = dPsi_drho(rho_contour)
-    return lambdas
-
-
 # ====================================================================
 # 4. EJEMPLO DE UN CONTORNO PARA UN RHO_HAT DETERMINADO
 # ====================================================================
 
 rho_hat = 1.6
 rho_path = build_rho_contour(rho_hat, step_size=1e-5)
-lam_path = lambda_contour(rho_path)
+lam_path = dPsi_drho(rho_path)
 
 # We plot the contour in the complex plane for rho
 real_parts, imag_parts = [], []
@@ -176,9 +179,26 @@ plt.show()
 # 5. INTEGRACIÓN NUMÉRICA PARA UNA LISTA DE RHO_HAT
 # ====================================================================
 
-def complex_integration(rho_hat, step=1e-3):
-    rho_path = build_rho_contour(rho_hat, step)
-    lam_path = lambda_contour(rho_path)
+def complex_integration(rho_hat, step_size=1e-3):
+    """
+    Integrador numérico con la regla del trapecio de la ecuación (B1) en el plano complejo de rho. 
+    La integral se realiza en el contorno que te devuelve la función build_rho_contour.
+
+    Parameters
+    ----------
+    rho_hat : float
+        Densidad física para la cual integramos. Es un número real. Si rho_hat<rhoc, este será el punto de inicio del contorno en la recta real.
+        En caso contrario, el punto de inicio será rhoc.
+    step_size : float
+        Magnitud (módulo) de cada paso utilizado para construir el contorno de integración.
+    
+    Return
+    -------
+    float
+        Resultado numérico de la integral
+    """
+    rho_path = build_rho_contour(rho_hat, step_size)
+    lam_path = dPsi_drho(rho_path)
     
     integral = 0
     for i in range(1, len(rho_path)):
@@ -189,6 +209,7 @@ def complex_integration(rho_hat, step=1e-3):
         exp_curr = np.exp( lam * (rho - rho_hat) - Psi(rho) )
 
         dlambda = lam - lam_prev
+        
         # Regla del trapecio
         integral += 0.5 * (exp_prev + exp_curr) * dlambda
     
@@ -276,6 +297,7 @@ plt.show()
 # 7. DATAFRAME
 # =======================================================================
 
+# We save the curves in a csv
 df = pd.DataFrame()
 df['Density'] = rho
 df['Numerical_integration'] = rho * integration_ar
