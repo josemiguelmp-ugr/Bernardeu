@@ -211,7 +211,7 @@ def complex_integration(rho_hat, step_size=1e-3):
         # Regla del trapecio
         integral += 0.5 * (exp_prev + exp_curr) * dlambda
     
-    result = 2 * integral / (2j * np.pi)  
+    result = 2 * np.real(integral / (2j * np.pi))
     
     # El contorno de integración está compuesto por el contorno rho_path y por su conjugado (donde también tenemos Im[exponente]=0)
     # Como las integrales en ambos contornos son iguales, aparece un factor 2 multiplicativo
@@ -302,4 +302,4 @@ df['Numerical_integration'] = rho * integration_ar
 df['Saddle_point'] = prob_saddle(rho)
 df['NNLO'] = rho * prob3
 
-df.to_csv('Figures/curvas.csv', index=False)
+df.to_csv('Data/curvas.csv', index=False)
