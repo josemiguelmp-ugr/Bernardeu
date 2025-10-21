@@ -29,10 +29,12 @@ mi_prob_rho_nnlo = df_mis_datos['NNLO'].values
 mi_rho_nnlo = mi_rho[len(mi_rho)-len(mi_prob_rho_nnlo):]
 
 
-#plt.plot(rho, prob_rho/rho, label= 'Bernardeu integration')
-#plt.plot(mi_rho, mi_prob_rho/mi_rho, label = 'My integration')
-plt.plot(rho_saddle, prob_rho_saddle/rho_saddle, label= 'Bernardeu saddle approx.')
-plt.plot(mi_rho[:len(mi_prob_rho_sad)], mi_prob_rho_sad, label='My saddle approx.')
+
+plt.figure()
+plt.plot(rho, prob_rho/rho, label= 'Bernardeu integration')
+plt.plot(mi_rho, mi_prob_rho/mi_rho, label = 'My integration')
+#plt.plot(rho_saddle, prob_rho_saddle/rho_saddle, label= 'Bernardeu saddle approx.')
+#plt.plot(mi_rho[:len(mi_prob_rho_sad)], mi_prob_rho_sad, label='My saddle approx.')
 #plt.plot(rho_nnlo, prob_rho_nnlo, label='Bernardeu NNLO')
 #plt.plot(mi_rho_nnlo, mi_prob_rho_nnlo, label='My NNLO')
 
@@ -70,16 +72,18 @@ def prob_exact(r):
     return p1, p2, p3
 
 
-rho = np.arange(0, 13, 0.05)
-prob1, prob2, prob3 = prob_exact(rho)
+rho_probs = np.arange(0, 13, 0.05)
+prob1, prob2, prob3 = prob_exact(rho_probs)
 
 fig, ax = plt.subplots()
 fig.set_size_inches(10, 6)
-ax.plot(rho, rho*prob1, label='Leading order')
-ax.plot(rho, rho*prob2, label='Next-to-leading order')
-ax.plot(rho, rho*prob3, label='Next-to-next-to-leading order')
+ax.plot(rho_probs, rho_probs*prob1, label='Leading order')
+ax.plot(rho_probs, rho_probs*prob2, label='Next-to-leading order')
+ax.plot(rho_probs, rho_probs*prob3, label='Next-to-next-to-leading order')
 ax.plot(rho_nnlo, prob_rho_nnlo, linestyle=':', label='Bernardeu NNLO')
 ax.plot(rho_lo, prob_rho_lo, linestyle=':', label='Bernardeu LO')
+ax.plot(rho, prob_rho, label= 'Bernardeu integration')
+ax.plot(mi_rho, mi_prob_rho, label = 'My integration')
 
 
 ax.set_yscale('log')
