@@ -51,20 +51,13 @@ plt.close()
 
 
 
-# Approximated curve
-
-# Parámetros cosmológicos / modelo
-nu = 21/13
-var = 0.47
-alpha = 0.5
-
 # Equation (45) from Bernardeu
-# Introducing nu = 1.4 and remaining unperturbed the other parameters in Mathematica
+# This relations are very sensitive to changes on the initial parameters
 def prob_exact(r):
-    exponential = np.exp(0.835141 - 0.651829*r)
-    term1 =   1.11647 / (r - 2.33195)**(5/2)
-    term2 = - 3.40557 / (r - 2.33195)**(7/2)
-    term3 = - 10.0463 / (r - 2.33195)**(9/2)
+    exponential = np.exp(0.964585 - 0.729487*r)
+    term1 =   1.20388 / (r - 2.57107)**(5/2)
+    term2 = - 3.80256 / (r - 2.57107)**(7/2)
+    term3 = - 15.9587 / (r - 2.57107)**(9/2)
 
     p1 = exponential * term1
     p2 = exponential * ( term1 + term2 )
@@ -72,22 +65,27 @@ def prob_exact(r):
     return p1, p2, p3
 
 
-rho_range = np.arange(0, 13, 0.05)
+rho_range = np.arange(0, 15, 0.05)
 prob1, prob2, prob3 = prob_exact(rho_range)
 
 fig, ax = plt.subplots()
 fig.set_size_inches(10, 6)
+
+# My numerical integration
+ax.plot(mi_rho, mi_prob_rho, label = 'My integration')
+
+# My approximations
 ax.plot(rho_range, rho_range*prob1, label='Leading order')
 ax.plot(rho_range, rho_range*prob2, label='Next-to-leading order')
 ax.plot(rho_range, rho_range*prob3, label='Next-to-next-to-leading order')
+
+# Bernardeu curves
 ax.plot(rho_nnlo, prob_rho_nnlo, linestyle=':', label='Bernardeu NNLO')
 ax.plot(rho_lo, prob_rho_lo, linestyle=':', label='Bernardeu LO')
 ax.plot(rho, prob_rho, label= 'Bernardeu integration')
-ax.plot(mi_rho, mi_prob_rho, label = 'My integration')
-
 
 ax.set_yscale('log')
-ax.set_ylim(1e-5, 1)
+ax.set_ylim(1e-6, 1)
 ax.set_ylabel(r'$\rho P(\rho)$')
 ax.set_xlabel(r'$\rho$')
 

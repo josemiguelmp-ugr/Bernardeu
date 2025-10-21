@@ -9,12 +9,12 @@ var = 0.45          # Variance at radius R
 n   = -1.5
 alpha = (n + 3) / 3
 
-"""
+
 # Values in the critical point from Mathematica (maximum of Fig. 1)
-rhoc = 2.57
-lamdac = 0.73
-phic = 0.91
-"""
+rhoc = 2.57107
+lamdac = 0.729487
+phic = 0.910978
+
 
 # Equation (32) from Bernardeu
 def Psi(rho):
@@ -47,7 +47,7 @@ phic_py = lambdac_py * rhoc_py - Psi(rhoc_py)
 print('Critical values\n')
 print(f'rho_c = {rhoc_py}, lambda_c = {lambdac_py}, psi_c = {Psi(rhoc_py)}, phi_c = {phic_py}')
 
-rhoc, lamdac, phic = rhoc_py, lambdac_py, phic_py
+#rhoc, lamdac, phic = rhoc_py, lambdac_py, phic_py
 
 
 # Gráfica de Lambda vs rho, donde podemos ver el punto crítico (máximo)
@@ -69,7 +69,8 @@ plt.plot(rho_ber, lambda_ber, label='Bernardeu')
 plt.legend()
 
 #plt.savefig('Figures/Lambda_rho.png')
-plt.show()
+#plt.show()
+plt.close()
 
 
 # ========================================================================
@@ -170,7 +171,8 @@ plt.ylabel(r'Im[$\rho$]')
 plt.title('Example of numerical integration contour')
 
 #plt.savefig('Figures/Contour_complex_plane.png')
-plt.show()
+#plt.show()
+plt.close()
 
 
 # ====================================================================
@@ -244,7 +246,7 @@ ax.plot(rho, np.real(rho*integration_ar), label='Numerical integration')
 
 
 ax.set_yscale('log')
-ax.set_ylim(1e-8, 1)
+ax.set_ylim(1e-6, 1)
 ax.set_ylabel(r'$\rho P(\rho)$')
 ax.set_xlabel(r'$\rho$')
 ax.legend()
@@ -277,8 +279,8 @@ def log_formatter(y, pos):
 ax.xaxis.set_minor_locator(ticker.MultipleLocator(0.5))
 ax.yaxis.set_major_formatter(ticker.FuncFormatter(log_formatter))
 
+plt.savefig('Figures/PDF_rho_extended.png')
 plt.show()
-#plt.savefig('Figures/PDF_rho.png')
 plt.close()
 
 
