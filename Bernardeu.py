@@ -45,7 +45,7 @@ index_c = np.argmax(lambdas)
 rhoc_py, lambdac_py = rho[index_c], lambdas[index_c]
 phic_py = lambdac_py * rhoc_py - Psi(rhoc_py)
 print('Critical values\n')
-print(f'rho_c = {rhoc_py}, lambda_c = {lambdac_py}, phi_c = {phic_py}')
+print(f'rho_c = {rhoc_py}, lambda_c = {lambdac_py}, psi_c = {Psi(rhoc_py)}, phi_c = {phic_py}')
 
 rhoc, lamdac, phic = rhoc_py, lambdac_py, phic_py
 
@@ -219,7 +219,7 @@ def complex_integration(rho_hat, step_size=1e-3):
 
     return result
 
-rho_ar = np.arange(0, 13, 0.05)
+rho_ar = np.arange(0, 15, 0.05)
 integration = []
 for rs in rho_ar:
     integration.append(complex_integration(rs, 1e-3))
@@ -231,7 +231,7 @@ integration_ar = np.array(integration)
 # 6. GRÁFICA FINAL
 # =======================================================================
 
-rho = np.arange(0, 13, 0.05)
+rho = np.arange(0, 15, 0.05)
 prob1, prob2, prob3 = prob_exact(rho)
 
 fig, ax = plt.subplots()
@@ -244,7 +244,7 @@ ax.plot(rho, np.real(rho*integration_ar), label='Numerical integration')
 
 
 ax.set_yscale('log')
-ax.set_ylim(1e-5, 1)
+ax.set_ylim(1e-8, 1)
 ax.set_ylabel(r'$\rho P(\rho)$')
 ax.set_xlabel(r'$\rho$')
 ax.legend()
