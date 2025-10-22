@@ -3,6 +3,10 @@ import pandas as pd
 import matplotlib.pylab as plt
 
 
+# ====================================================================
+#                 READING THE FILES WITH THE DATA
+# ====================================================================
+
 data_bernardeu_int = np.loadtxt('Data/numerical_integration.csv', delimiter=',')
 data_bernardeu_sad = np.loadtxt('Data/saddle_point.csv', delimiter=',')
 data_bernardeu_lo = np.loadtxt('Data/LO.csv', delimiter=',')
@@ -29,6 +33,9 @@ mi_prob_rho_nnlo = df_mis_datos['NNLO'].values
 mi_rho_nnlo = mi_rho[len(mi_rho)-len(mi_prob_rho_nnlo):]
 
 
+# ====================================================================
+#                             FIGURES
+# ====================================================================
 
 plt.figure()
 plt.plot(rho, prob_rho/rho, label= 'Bernardeu integration')
