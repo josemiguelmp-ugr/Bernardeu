@@ -91,7 +91,7 @@ def prob_saddle(rho):
 # ========================================================================
 
 # Equation (45) from Bernardeu
-def prob_exact(r):
+def prob_aprox(r):
     exponential = np.exp(0.964585 - 0.729487*r)
     term1 =   1.20388 / (r - 2.57107)**(5/2)
     term2 = - 3.80256 / (r - 2.57107)**(7/2)
@@ -100,6 +100,20 @@ def prob_exact(r):
     p1 = exponential * term1
     p2 = exponential * ( term1 + term2 )
     p3 = exponential * ( term1 + term2 + term3 )
+    return p1, p2, p3
+
+
+# Equation (46) from Bernardeu
+def prob_aprox_2(r):
+    exponential = np.exp(0.964585 - 0.729487*r) * 1.20388
+    term1 = r
+    term2 = - 1.30763
+    term3 = 8.09591 / r
+
+    p1 = exponential / (term1)**(5/2)
+    p2 = exponential / (term1 + term2)**(5/2)
+    p3 = exponential / (term1 + term2 + term3)**(5/2)
+
     return p1, p2, p3
 
 
@@ -234,13 +248,17 @@ integration_ar = np.array(integration)
 # =======================================================================
 
 rho = np.arange(0, 15, 0.05)
-prob1, prob2, prob3 = prob_exact(rho)
+prob1, prob2, prob3 = prob_aprox(rho)
+prob1_2, prob2_2, prob3_2 = prob_aprox_2(rho)
 
 fig, ax = plt.subplots()
 fig.set_size_inches(10, 6)
 ax.plot(rho, rho*prob1, label='Leading order')
 ax.plot(rho, rho*prob2, label='Next-to-leading order')
 ax.plot(rho, rho*prob3, label='Next-to-next-to-leading order')
+ax.plot(rho, rho*prob1_2, ':', label='Leading order (2)')
+ax.plot(rho, rho*prob2_2, ':', label='Next-to-leading order (2)')
+ax.plot(rho, rho*prob3_2, ':', label='Next-to-next-to-leading order (2)')
 ax.plot(rho, rho*prob_saddle(rho), label='Saddle point')
 ax.plot(rho, np.real(rho*integration_ar), label='Numerical integration')
 
@@ -279,7 +297,7 @@ def log_formatter(y, pos):
 ax.xaxis.set_minor_locator(ticker.MultipleLocator(0.5))
 ax.yaxis.set_major_formatter(ticker.FuncFormatter(log_formatter))
 
-plt.savefig('Figures/PDF_rho_extended.png')
+#plt.savefig('Figures/PDF_rho_more_curves.png')
 plt.show()
 plt.close()
 

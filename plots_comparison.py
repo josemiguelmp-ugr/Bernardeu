@@ -53,14 +53,14 @@ plt.ylabel(r'$P(\rho)$')
 plt.xlabel(r'$\rho$')
 plt.legend(loc='best')
 #plt.savefig('Figures/Comparison_numerical_int.png')
-plt.show()
+#plt.show()
 plt.close()
 
 
 
 # Equation (45) from Bernardeu
 # This relations are very sensitive to changes on the initial parameters
-def prob_exact(r):
+def prob_aprox(r):
     exponential = np.exp(0.964585 - 0.729487*r)
     term1 =   1.20388 / (r - 2.57107)**(5/2)
     term2 = - 3.80256 / (r - 2.57107)**(7/2)
@@ -72,8 +72,23 @@ def prob_exact(r):
     return p1, p2, p3
 
 
+# Equation (46) from Bernardeu
+def prob_aprox_2(r):
+    exponential = np.exp(0.964585 - 0.729487*r) * 1.20388
+    term1 = r
+    term2 = - 1.30763
+    term3 = 8.09591 / r
+
+    p1 = exponential / (term1)**(5/2)
+    p2 = exponential / (term1 + term2)**(5/2)
+    p3 = exponential / (term1 + term2 + term3)**(5/2)
+
+    return p1, p2, p3
+
+
 rho_range = np.arange(0, 15, 0.05)
-prob1, prob2, prob3 = prob_exact(rho_range)
+#prob1, prob2, prob3 = prob_aprox(rho_range)
+prob1, prob2, prob3 = prob_aprox_2(rho_range)
 
 fig, ax = plt.subplots()
 fig.set_size_inches(10, 6)
