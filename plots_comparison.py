@@ -11,6 +11,7 @@ data_bernardeu_int = np.loadtxt('Data/numerical_integration.csv', delimiter=',')
 data_bernardeu_sad = np.loadtxt('Data/saddle_point.csv', delimiter=',')
 data_bernardeu_lo = np.loadtxt('Data/LO.csv', delimiter=',')
 data_bernardeu_nnlo = np.loadtxt('Data/NNLO.csv', delimiter=',')
+data_bernardeu_nnlo_v2 = np.loadtxt('Data/NNLO_v2.csv', delimiter=',')
 df_mis_datos = pd.read_csv('Data/curvas.csv')
 
 rho = data_bernardeu_int[:, 0]
@@ -24,6 +25,9 @@ prob_rho_lo = data_bernardeu_lo[:, 1]
 
 rho_nnlo = data_bernardeu_nnlo[:, 0]
 prob_rho_nnlo = data_bernardeu_nnlo[:, 1]
+
+rho_nnlo_v2 = data_bernardeu_nnlo_v2[:, 0]
+prob_rho_nnlo_v2 = data_bernardeu_nnlo_v2[:, 1]
 
 mi_rho = df_mis_datos['Density'].values
 mi_prob_rho = df_mis_datos['Numerical_integration'].apply(complex).values
@@ -87,15 +91,15 @@ def prob_aprox_2(r):
 
 
 rho_range = np.arange(0, 15, 0.05)
-#prob1, prob2, prob3 = prob_aprox(rho_range)
-prob1, prob2, prob3 = prob_aprox_2(rho_range)
+prob1, prob2, prob3 = prob_aprox(rho_range)
+prob1_v2, prob2_v2, prob3_v2 = prob_aprox_2(rho_range)
 
 fig, ax = plt.subplots()
 fig.set_size_inches(10, 6)
 
 # My numerical integration
 ax.plot(mi_rho, mi_prob_rho, label = 'My integration')
-
+"""
 # My approximations
 ax.plot(rho_range, rho_range*prob1, label='Leading order')
 ax.plot(rho_range, rho_range*prob2, label='Next-to-leading order')
@@ -104,7 +108,22 @@ ax.plot(rho_range, rho_range*prob3, label='Next-to-next-to-leading order')
 # Bernardeu curves
 ax.plot(rho_nnlo, prob_rho_nnlo, linestyle=':', label='Bernardeu NNLO')
 ax.plot(rho_lo, prob_rho_lo, linestyle=':', label='Bernardeu LO')
-ax.plot(rho, prob_rho, label= 'Bernardeu integration')
+"""
+ax.plot(rho, prob_rho, linestyle=':', label= 'Bernardeu integration')
+
+
+
+
+ax.plot(rho_nnlo_v2, prob_rho_nnlo_v2, linestyle=':', label='Bernardeu NNLO (2)')
+
+# My approximations
+#ax.plot(rho_range, rho_range*prob1_v2, label='Leading order (2)')
+#ax.plot(rho_range, rho_range*prob2_v2, label='Next-to-leading order (2)')
+ax.plot(rho_range, rho_range*prob3_v2, label='Next-to-next-to-leading order (2)')
+
+
+
+
 
 ax.set_yscale('log')
 ax.set_ylim(1e-6, 1)
