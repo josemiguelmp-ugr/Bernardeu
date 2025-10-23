@@ -37,9 +37,9 @@ mi_prob_rho_nnlo = df_mis_datos['NNLO'].values
 mi_rho_nnlo = mi_rho[len(mi_rho)-len(mi_prob_rho_nnlo):]
 
 
-# ====================================================================
+# =======================================================================
 #                             FIGURES
-# ====================================================================
+# =======================================================================
 
 plt.figure()
 plt.plot(rho, prob_rho/rho, label= 'Bernardeu integration')
@@ -99,7 +99,7 @@ fig.set_size_inches(10, 6)
 
 # My numerical integration
 ax.plot(mi_rho, mi_prob_rho, label = 'My integration')
-"""
+
 # My approximations
 ax.plot(rho_range, rho_range*prob1, label='Leading order')
 ax.plot(rho_range, rho_range*prob2, label='Next-to-leading order')
@@ -108,22 +108,18 @@ ax.plot(rho_range, rho_range*prob3, label='Next-to-next-to-leading order')
 # Bernardeu curves
 ax.plot(rho_nnlo, prob_rho_nnlo, linestyle=':', label='Bernardeu NNLO')
 ax.plot(rho_lo, prob_rho_lo, linestyle=':', label='Bernardeu LO')
+
+#ax.plot(rho, prob_rho, linestyle=':', label= 'Bernardeu integration')
+
 """
-ax.plot(rho, prob_rho, linestyle=':', label= 'Bernardeu integration')
-
-
-
-
 ax.plot(rho_nnlo_v2, prob_rho_nnlo_v2, linestyle=':', label='Bernardeu NNLO (2)')
 
 # My approximations
 #ax.plot(rho_range, rho_range*prob1_v2, label='Leading order (2)')
 #ax.plot(rho_range, rho_range*prob2_v2, label='Next-to-leading order (2)')
-ax.plot(rho_range, rho_range*prob3_v2, label='Next-to-next-to-leading order (2)')
+ax.plot(rho_range, prob3_v2*rho_range, label='Next-to-next-to-leading order (2)')
 
-
-
-
+"""
 
 ax.set_yscale('log')
 ax.set_ylim(1e-6, 1)
@@ -131,5 +127,6 @@ ax.set_ylabel(r'$\rho P(\rho)$')
 ax.set_xlabel(r'$\rho$')
 
 ax.legend()
+#plt.savefig('Figures/Aprox_eq_45.png')
 plt.show()
 

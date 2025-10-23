@@ -51,7 +51,7 @@ print(f'rho_c = {rhoc_py}, lambda_c = {lambdac_py}, psi_c = {Psi(rhoc_py)}, phi_
 
 
 # Gráfica de Lambda vs rho, donde podemos ver el punto crítico (máximo)
-plt.plot(rho, lambdas)
+plt.plot(rho, lambdas, 'Mine')
 plt.axhline(0.4, color='r')
 plt.axvline(rhoc_py, linestyle='dashed', color='gray')
 plt.ylim(-0.8, 0.8)
@@ -69,7 +69,7 @@ plt.plot(rho_ber, lambda_ber, label='Bernardeu')
 plt.legend()
 
 #plt.savefig('Figures/Lambda_rho.png')
-#plt.show()
+plt.show()
 plt.close()
 
 
