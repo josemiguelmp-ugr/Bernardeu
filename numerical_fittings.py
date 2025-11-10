@@ -63,9 +63,14 @@ def poly30(x, *a):
             poly += coef * x**power
     return -poly
 
+
+# Fit using Eq. (45)
+def expression_1(x, A, B, C, D): 
+    return np.exp(phic - lamdac * x) * ( A*(x-rhoc)**(-5/2) + B*(x-rhoc)**(-7/2) + C*(x-rhoc)**(-9/2) + D*(x-rhoc)**(-11/2)  )
+
 # Fit using Eq. (46)
-def expression(x, A, B, C): 
-    return A * np.exp(phic-lamdac * x) * (x + B + C/x)**(-5/2)
+def expression_2(x, A, B, C): 
+    return A * np.exp(phic -lamdac * x) * (x + B + C/x)**(-5/2)
 
 # Ajustes
 popt_1, _ = curve_fit(poly3, x, y)
@@ -77,7 +82,8 @@ popt_4, _ = curve_fit(poly20, x, y, p0=np.zeros(21))  # 21 coeficientes
 popt_5, _ = curve_fit(poly30, x, y, p0=np.zeros(31))  # 31 coeficientes
 
 # Special
-popt_s, _ = curve_fit(expression, mi_rho[1:], mi_prob_rho[1:] / mi_rho[1:])
+popt_s1, _ = curve_fit(expression_1, mi_rho[1:], mi_prob_rho[1:] / mi_rho[1:])
+popt_s2, _ = curve_fit(expression_2, mi_rho[1:], mi_prob_rho[1:] / mi_rho[1:])
 
 
 # Reconstrucción de las PDF
@@ -87,7 +93,8 @@ fit10 = np.exp(poly10(mi_rho - rhoc, *popt_3)) * mi_rho
 fit20 = np.exp(poly20(mi_rho - rhoc, *popt_4)) * mi_rho
 fit30 = np.exp(poly30(mi_rho - rhoc, *popt_5)) * mi_rho
 
-fit_s = expression(mi_rho, *popt_s) * mi_rho
+fit_s1 = expression_1(mi_rho, *popt_s1) * mi_rho
+fit_s2 = expression_2(mi_rho, *popt_s2) * mi_rho
 
 
 # Plots
@@ -104,7 +111,8 @@ plt.plot(mi_rho, mi_prob_rho, label = 'Numerical integration')
 #plt.plot(mi_rho, np.exp(- fit_4)  * mi_rho, linestyle = ':', label='Grado 4')
 #plt.plot(mi_rho, np.exp(- fit_10) * mi_rho, linestyle = ':', label='Grado 10')
 
-plt.plot(mi_rho, fit_s, linestyle=':', label='Eq. (46)')
+plt.plot(mi_rho, fit_s1, linestyle=':', label='Eq. (45)')
+plt.plot(mi_rho, fit_s2, linestyle=':', label='Eq. (46)')
 
 
 plt.yscale('log')
