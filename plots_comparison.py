@@ -105,21 +105,19 @@ ax.plot(rho_range, rho_range*prob1, label='Leading order')
 ax.plot(rho_range, rho_range*prob2, label='Next-to-leading order')
 ax.plot(rho_range, rho_range*prob3, label='Next-to-next-to-leading order')
 
+ax.plot(rho_range, rho_range*prob1_v2, label='Leading order (2)')
+ax.plot(rho_range, rho_range*prob2_v2, label='Next-to-leading order (2)')
+ax.plot(rho_range, prob3_v2*rho_range, label='Next-to-next-to-leading order (2)')
+
+"""
 # Bernardeu curves
 ax.plot(rho_nnlo, prob_rho_nnlo, linestyle=':', label='Bernardeu NNLO')
 ax.plot(rho_lo, prob_rho_lo, linestyle=':', label='Bernardeu LO')
 
 #ax.plot(rho, prob_rho, linestyle=':', label= 'Bernardeu integration')
-
-"""
 ax.plot(rho_nnlo_v2, prob_rho_nnlo_v2, linestyle=':', label='Bernardeu NNLO (2)')
-
-# My approximations
-#ax.plot(rho_range, rho_range*prob1_v2, label='Leading order (2)')
-#ax.plot(rho_range, rho_range*prob2_v2, label='Next-to-leading order (2)')
-ax.plot(rho_range, prob3_v2*rho_range, label='Next-to-next-to-leading order (2)')
-
 """
+
 
 ax.set_yscale('log')
 ax.set_ylim(1e-6, 1)
