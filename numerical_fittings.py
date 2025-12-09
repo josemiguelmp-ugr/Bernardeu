@@ -87,8 +87,8 @@ popt_s2, _ = curve_fit(expression_2, mi_rho[1:], mi_prob_rho[1:] / mi_rho[1:])
 
 
 # Reconstrucción de las PDF
-fit3 = np.exp(poly3(mi_rho - rhoc, *popt_1)) * mi_rho
-fit4 = np.exp(poly4(mi_rho - rhoc, *popt_2)) * mi_rho
+fit3  = np.exp(poly3(mi_rho - rhoc, *popt_1)) * mi_rho
+fit4  = np.exp(poly4(mi_rho - rhoc, *popt_2)) * mi_rho
 fit10 = np.exp(poly10(mi_rho - rhoc, *popt_3)) * mi_rho
 fit20 = np.exp(poly20(mi_rho - rhoc, *popt_4)) * mi_rho
 fit30 = np.exp(poly30(mi_rho - rhoc, *popt_5)) * mi_rho
@@ -103,7 +103,7 @@ plt.plot(mi_rho, mi_prob_rho, label = 'Numerical integration')
 #plt.plot(mi_rho, fit4,  linestyle='-.', label='Grado 4')
 #plt.plot(mi_rho, fit10, linestyle='-.', label='Grado 10')
 #plt.plot(mi_rho, fit20, linestyle='-.', label='Grado 20')
-#plt.plot(mi_rho, fit30, linestyle='-.', label='Grado 30')
+plt.plot(mi_rho, fit30, linestyle='-.', label='Grado 30')
 
 
 #plt.plot(mi_rho, np.exp(- fit_2)  * mi_rho, linestyle = ':', label='Grado 2')
@@ -118,6 +118,34 @@ plt.plot(mi_rho, fit_s2, linestyle=':', label='Eq. (46)')
 plt.yscale('log')
 plt.xlabel(r'$\rho$')
 plt.ylabel(r'$P(\rho)$')
-plt.legend()
 plt.tight_layout()
+
+
+
+
+print(*popt_s2)
+
+def area_under_curve(rho, prob):
+    integral = 0 
+    for i in np.arange(1, len(prob)):
+        y_prev, y = prob[i-1], prob[i]
+        drho = rho[i] - rho[i-1]
+        integral += 0.5 * (y_prev + y) * drho
+    
+    return integral
+
+print(area_under_curve(mi_rho[1:], mi_prob_rho[1:] / mi_rho[1:]))
+
+print(area_under_curve(mi_rho, fit30))
+
+
+A, B, C = popt_s2
+print(f'A={A}, B={B}, C={C}')
+
+
+
+print(area_under_curve(mi_rho, fit_s2))
+
+plt.plot(mi_rho, fit_s2, linestyle='-', label='Pumba')
+plt.legend()
 plt.show()

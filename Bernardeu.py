@@ -11,9 +11,9 @@ alpha = (n + 3) / 3
 
 
 # Values in the critical point from Mathematica (maximum of Fig. 1)
-rhoc = 2.57107
+rhoc   = 2.57107
 lamdac = 0.729487
-phic = 0.910978
+phic   = 0.910978
 
 
 # Equation (32) from Bernardeu
@@ -51,7 +51,7 @@ print(f'rho_c = {rhoc_py}, lambda_c = {lambdac_py}, psi_c = {Psi(rhoc_py)}, phi_
 
 
 # Gráfica de Lambda vs rho, donde podemos ver el punto crítico (máximo)
-plt.plot(rho, lambdas, 'Mine')
+plt.plot(rho, lambdas, label='Mine')
 plt.axhline(0.4, color='r')
 plt.axvline(rhoc_py, linestyle='dashed', color='gray')
 plt.ylim(-0.8, 0.8)

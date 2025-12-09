@@ -7,36 +7,78 @@ import matplotlib.pylab as plt
 #                 READING THE FILES WITH THE DATA
 # ====================================================================
 
-data_bernardeu_int = np.loadtxt('Data/numerical_integration.csv', delimiter=',')
-data_bernardeu_sad = np.loadtxt('Data/saddle_point.csv', delimiter=',')
-data_bernardeu_lo = np.loadtxt('Data/LO.csv', delimiter=',')
-data_bernardeu_nnlo = np.loadtxt('Data/NNLO.csv', delimiter=',')
-data_bernardeu_nnlo_v2 = np.loadtxt('Data/NNLO_v2.csv', delimiter=',')
-df_mis_datos = pd.read_csv('Data/curvas.csv')
+data_bernardeu_int      = np.loadtxt('Data/numerical_integration.csv', delimiter=',')
+data_bernardeu_sad      = np.loadtxt('Data/saddle_point.csv', delimiter=',')
+data_bernardeu_lo       = np.loadtxt('Data/LO.csv', delimiter=',')
+data_bernardeu_nnlo     = np.loadtxt('Data/NNLO.csv', delimiter=',')
+data_bernardeu_nnlo_v2  = np.loadtxt('Data/NNLO_v2.csv', delimiter=',')
+df_mis_datos            = pd.read_csv('Data/curvas.csv')
 
-rho = data_bernardeu_int[:, 0]
+rho      = data_bernardeu_int[:, 0]
 prob_rho = data_bernardeu_int[:, 1]
 
-rho_saddle = data_bernardeu_sad[:, 0]
+rho_saddle      = data_bernardeu_sad[:, 0]
 prob_rho_saddle = data_bernardeu_sad[:, 1]
 
-rho_lo = data_bernardeu_lo[:, 0]
+rho_lo      = data_bernardeu_lo[:, 0]
 prob_rho_lo = data_bernardeu_lo[:, 1]
 
-rho_nnlo = data_bernardeu_nnlo[:, 0]
+rho_nnlo      = data_bernardeu_nnlo[:, 0]
 prob_rho_nnlo = data_bernardeu_nnlo[:, 1]
 
-rho_nnlo_v2 = data_bernardeu_nnlo_v2[:, 0]
+rho_nnlo_v2      = data_bernardeu_nnlo_v2[:, 0]
 prob_rho_nnlo_v2 = data_bernardeu_nnlo_v2[:, 1]
 
-mi_rho = df_mis_datos['Density'].values
-mi_prob_rho = df_mis_datos['Numerical_integration'].apply(complex).values
-mi_prob_rho_sad = df_mis_datos['Saddle_point'].values
+mi_rho           = df_mis_datos['Density'].values
+mi_prob_rho      = df_mis_datos['Numerical_integration'].apply(complex).values
+mi_prob_rho_sad  = df_mis_datos['Saddle_point'].values
 mi_prob_rho_nnlo = df_mis_datos['NNLO'].values
 
 mi_rho_nnlo = mi_rho[len(mi_rho)-len(mi_prob_rho_nnlo):]
 
 
+# =======================================================================
+#             ÁREA BAJO LA CURVA DE INTEGRACIÓN NUMÉRICA
+# =======================================================================
+
+
+x = rho[7:]
+y = prob_rho[7:]
+
+from scipy.interpolate import CubicSpline
+spline = CubicSpline(x, y)
+
+# Interpolation
+x_new = np.linspace(x.min(), x.max(), 200)  # 200 puntos interpolados
+y_new = spline(x_new)
+
+
+plt.figure(figsize=(8, 5))
+plt.plot(rho, prob_rho/rho, 'o', label='Datos originales')
+plt.plot(x_new, y_new/x_new, '-', label='Spline interpolado')
+plt.legend()
+plt.show()
+
+
+
+def area_under_curve(rho, prob_rho):
+    prob = prob_rho / rho
+    integral = 0 
+    for i in np.arange(1, len(prob)):
+        y_prev, y = prob[i-1], prob[i]
+        drho = rho[i] - rho[i-1]
+        integral += 0.5 * (y_prev + y) * drho
+    
+    return integral
+
+print(area_under_curve(x_new, y_new))
+
+print(area_under_curve(rho, prob_rho))
+print(area_under_curve(rho_nnlo, prob_rho_nnlo))
+print(area_under_curve(rho_nnlo_v2, prob_rho_nnlo_v2))
+
+
+"""
 # =======================================================================
 #                             FIGURES
 # =======================================================================
@@ -111,11 +153,11 @@ ax.plot(rho_range, prob3_v2*rho_range, label='Next-to-next-to-leading order (2)'
 
 """
 # Bernardeu curves
-ax.plot(rho_nnlo, prob_rho_nnlo, linestyle=':', label='Bernardeu NNLO')
-ax.plot(rho_lo, prob_rho_lo, linestyle=':', label='Bernardeu LO')
+#ax.plot(rho_nnlo, prob_rho_nnlo, linestyle=':', label='Bernardeu NNLO')
+#ax.plot(rho_lo, prob_rho_lo, linestyle=':', label='Bernardeu LO')
 
 #ax.plot(rho, prob_rho, linestyle=':', label= 'Bernardeu integration')
-ax.plot(rho_nnlo_v2, prob_rho_nnlo_v2, linestyle=':', label='Bernardeu NNLO (2)')
+#ax.plot(rho_nnlo_v2, prob_rho_nnlo_v2, linestyle=':', label='Bernardeu NNLO (2)')
 """
 
 
@@ -128,3 +170,4 @@ ax.legend()
 #plt.savefig('Figures/Aprox_eq_45.png')
 plt.show()
 
+"""
