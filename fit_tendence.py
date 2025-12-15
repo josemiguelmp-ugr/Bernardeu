@@ -59,9 +59,5 @@ for i in range(len(variances)):
 
 plt.yscale('log')
 #plt.legend()
-plt.legend(
-    loc='center left',
-    bbox_to_anchor=(1, 0.5),
-    ncol=1
-)
+plt.legend(loc='center left', bbox_to_anchor=(1, 0.5), ncol=1)
 plt.show()

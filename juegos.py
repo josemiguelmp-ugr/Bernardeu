@@ -22,19 +22,20 @@ def pdf_non_normalized(x, var, B, C):
     phic   =  0.434063 / var
     return np.exp(phic - lamdac * x) * (x + B + C / x)**(-5/2)
 
+# Modelo final para el fit de la PDF
 def prob_fit(delta, var):
-    rhoc   =  2.57107
     lamdac =  0.328269 / var
     phic   =  0.434063 / var
 
-    a0, a1, a2, a3, a4, a5, a6 = 0.04695910742441713, -0.6642049938350947, 2.4353359038289777, 3.6354491307579315, 1.5181112635331262, 0.17469598137756703, 0.6214850573229408
+    #a0, a1, a2, a3, a4, a5, a6 = 0.04695910742441713, -0.6642049938350947, 2.4353359038289777, 3.6354491307579315, 1.5181112635331262, 0.17469598137756703, 0.6214850573229408
     b0, b1, b2, b3, b4 = 0.0979931675570106, 3.1972055079415354, 3.9083535195901087, 0.35435722761935323, 0.5201525548415581
     c0, c1, c2, c3, c4 = 0.0023928609265879866, 1.7761815559139071, 3.632416222582498, 0.4986992331769517, 1.650113588148832
 
+    #A = modelo_A(var, a0, a1, a2, a3, a4, a5, a6)
     B = modelo_B(var, b0, b1, b2, b3, b4)
     C = modelo_C(var, c0, c1, c2, c3, c4)
 
-    # Normalización
+    # Normalización (solo hace falta cambiar A)
     I0, _ = quad(pdf_non_normalized, 0, np.inf, args=(var, B, C))
     A = 1 / I0
 
@@ -42,7 +43,7 @@ def prob_fit(delta, var):
 
 
 
-var = 14
+var = 17.6
 
 
 # Región peliaguda
@@ -60,24 +61,22 @@ integration_ar = np.concatenate((integration_ar_1[4:], integration_ar_2))
 
 
 
-
-
-
+# Fit original (para A, B, C)
 df_fit_2 = pd.read_csv('Fits/fits_2.csv')
-A = df_fit_2['A'].values[0]
-B = df_fit_2['B'].values[0]
-C = df_fit_2['C'].values[0]
+df_variances = df_fit_2['Variance'].values
+index_var = np.argmin( abs(df_variances - var) )
+
+A = df_fit_2['A'].values[index_var]
+B = df_fit_2['B'].values[index_var]
+C = df_fit_2['C'].values[index_var]
 
 lamdac =  0.328269 / var
 phic   =  0.434063 / var
 fit_original = A * np.exp(phic - lamdac * rho_ar) * (rho_ar + B + C / rho_ar)**(-5/2)
 
 
-print( area_under_curve(rho_ar[integration_ar < 0.1], integration_ar[integration_ar < 0.1]) )
-print( area_under_curve(rho_ar[integration_ar < 0.1], fit_original[integration_ar < 0.1]) )
 
-
-
+# Multiparameter fit
 prob_fit_ar = prob_fit(rho_ar, var)
 
 print(f'Área bajo la curva (integración numérica): {area_under_curve(rho_ar, integration_ar)}')
