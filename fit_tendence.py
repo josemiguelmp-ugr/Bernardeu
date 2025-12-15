@@ -1,5 +1,5 @@
 # Programa para comprobar que los ajustes con varianza cada vez mayor siguen la tendencia de las curvas 
-# sacadas directamente por integración numérica (picos cada vez más puntiagudos y caídas más rápidas)
+# sacadas directamente por integración numérica (picos cada vez más estrechos y caídas más rápidas)
 
 
 import numpy as np 
@@ -10,7 +10,7 @@ import matplotlib.cm as cm
 
 from scipy.optimize import curve_fit
 from scipy.integrate import quad
-from functions import*      # My module
+from functions import*                  # My module
 
 
 def modelo_A(x, a0, a1, a2, a3, a4, a5, a6):
