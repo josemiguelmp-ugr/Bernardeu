@@ -186,10 +186,7 @@ for sigma2 in variances:
     integration_ar = np.concatenate((integration_ar_1[4:], integration_ar_2))
 
 
-    # Queremos que el ajuste se centre en el pico de la curva, pues después va tomando valores cada vez más despreciables
-    mask = integration_ar > 0.01
-
-    popt_s2, _ = curve_fit(pdf_model, rho_ar[mask], integration_ar[mask])
+    popt_s2, _ = curve_fit(pdf_model, rho_ar, integration_ar)
     A, B, C = popt_s2
     I0, _ = quad(pdf_non_normalized, 0, np.inf, args=(B, C))
     A_ = 1 / I0                                                     # A normalizado
