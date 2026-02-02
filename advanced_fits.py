@@ -144,7 +144,7 @@ for sigma2 in variances:
         writer = csv.writer(file)
         writer.writerow([sigma2, A_, B, C])
 
-"""
+
 
 # =======================================================================
 #                       FITS FOR VARIANCES >= 4.5
@@ -204,6 +204,9 @@ for sigma2 in variances:
 # =======================================================================
 #                   VARIATION OF PARAMETERS A, B, C
 # =======================================================================
+
+# Los archivos fits.csv y fits_2.csv se han hecho dejando los parámetros B y C libres y tomando A de manera que normalice la PDF
+# Los archivos fits_4.csv y fits_5.csv se han hecho dejando todos los parámetros (A, B, C) libres, por lo que las PDFs no salen normalizadas
 
 
 df_fit_1 = pd.read_csv('Fits/fits.csv')
@@ -272,4 +275,3 @@ ax.legend()
 
 plt.show()
 
-"""
