@@ -77,6 +77,7 @@ plt.close()
 # 1. SADDLE POINT APPROXIMATION
 # ========================================================================
 
+# Saddle point approximation
 # Equation (44) from Bernardeu
 def prob_saddle(rho):
     """
