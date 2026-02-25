@@ -1,7 +1,4 @@
-import numpy as np 
-import pandas as pd
-import matplotlib.pylab as plt
-import matplotlib.ticker as ticker
+import numpy as np
 
 # Model parameters
 nu  = 21/13.        # Fit in lambda vs rho approximately for nu=1.36
