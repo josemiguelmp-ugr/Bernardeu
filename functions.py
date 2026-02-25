@@ -34,6 +34,11 @@ def dPsi_drho_2(rho, var):
     return term1 + term2 + term3 + term4
 
 
+
+# ====================================================================
+#                   EXACT NUMERICAL INTEGRATION
+# ====================================================================
+
 def build_rho_contour(rho_hat, var, step_size=0.04):
     """
     Función que construye un contorno de integración en el plano complejo de rho para la integral P(rho_hat) de la Ec. (B1) de Bernardeu.
@@ -61,7 +66,7 @@ def build_rho_contour(rho_hat, var, step_size=0.04):
     F = dPsi_drho(rho_curr, var) * (rho_curr - rho_hat) - Psi(rho_curr, var)
 
     while np.real(F)>-50:                     # Tenemos Im(F)=0, por lo que el integrando es exp(-Re(F)), donde Re(F) va creciendo a cada paso. Cuando el exponente sea muy negativo, la exponencial tenderá a cero
-        Psi_dd = dPsi_drho_2(rho_curr, var)        # Psi''(rho)
+        Psi_dd = dPsi_drho_2(rho_curr, var)   # Psi''(rho)
         delta = rho_curr - rho_hat            # (rho - rho_hat)
         theta = - np.angle(Psi_dd * delta)
         modulus = step_size
@@ -121,6 +126,8 @@ def complex_integration(rho_hat, var, step_size=1e-3):
 
 
 
+
+# Calcula el área bajo la curva
 def area_under_curve(rho, prob):
     integral = 0 
     for i in np.arange(1, len(prob)):
@@ -131,6 +138,7 @@ def area_under_curve(rho, prob):
     return integral
 
 
+# Pequeñas marcas en el eje Y, en escala logarítmica
 def log_formatter(y, pos):
     """
     Formateador de etiquetas para el eje Y en escala logarítmica.
