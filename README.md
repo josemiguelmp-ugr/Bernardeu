@@ -1,0 +1,1 @@
+We try to reproduce the curves of the Figure 2 of Bernardeau et al 2013, not only the analytical approximations but also the numerical integration. In addition, we do an expansion for a generical value for the variance, encompassig the numerical integration for all the variances in an analytical fit.
